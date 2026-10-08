@@ -6,14 +6,15 @@
 
 struct node
 {
-	char inf[256];
+	char inf[256];      // полезная информация
 	int prior;
-	struct node* next;
+	struct node* next;  // ссылка на следующий элемент 
 };
 
-struct node* head = NULL, * last = NULL;
+struct node* head = NULL, * last = NULL; // указатели на первый и последний элементы списка
 int mode = 1; // 1 - Стек, 2 - Очередь, 3 - Приоритетная очередь
 
+// Функции добавления элемента, просмотра списка
 void spstore(void), review(void), del_substr(char* sub);
 struct node* get_struct(void);
 void insert_node(struct node* p);
@@ -28,13 +29,13 @@ struct node* get_struct(void)
 	char s[256];
 	int pr = 0;
 
-	if ((p = (struct node*)malloc(sizeof(struct node))) == NULL)
+	if ((p = (struct node*)malloc(sizeof(struct node))) == NULL)  // выделяем память под новый элемент списка
 	{
 		printf("Ошибка при распределении памяти\n");
 		exit(1);
 	}
 
-	printf("Введите название объекта: \n");
+	printf("Введите название объекта: \n");   // вводим данные
 	scanf("%s", s);
 	if (*s == 0)
 	{
@@ -52,7 +53,7 @@ struct node* get_struct(void)
 	p->prior = pr;
 	p->next = NULL;
 
-	return p;
+	return p; // возвращаем указатель на созданный элемент
 }
 
 /* Вставка узла в структуру в зависимости от режима */
@@ -61,7 +62,7 @@ void insert_node(struct node* p)
 	if (p == NULL) return;
 	p->next = NULL;
 
-	// 1. стек (вставка в начало)
+	// 1. стек
 	if (mode == 1)
 	{
 		p->next = head;
@@ -69,7 +70,7 @@ void insert_node(struct node* p)
 		if (last == NULL)
 			last = p;
 	}
-	// 2. очередь (вставка в конец)
+	// 2. очередь
 	else if (mode == 2)
 	{
 		if (head == NULL)
@@ -83,7 +84,7 @@ void insert_node(struct node* p)
 			last = p;
 		}
 	}
-	// 3. приоритетная очередь (по убыванию приоритета)
+	// 3. приоритетная очередь
 	else if (mode == 3)
 	{
 		struct node* cur = head;
@@ -235,7 +236,6 @@ void change_priority(char* name, int new_pr)
 		return;
 	}
 
-	// Извлекаем узел из списка
 	if (prev == NULL)
 	{
 		head = cur->next;
@@ -250,7 +250,7 @@ void change_priority(char* name, int new_pr)
 	}
 
 	cur->prior = new_pr;
-	insert_node(cur); // Вставляем обратно с учетом нового приоритета
+	insert_node(cur);
 	printf("Приоритет обновлен\n");
 }
 
@@ -275,20 +275,17 @@ void move_to_back(char* name)
 		return;
 	}
 
-	// Если он уже в конце, ничего делать не нужно
 	if (cur == last)
 	{
 		printf("Элемент уже находится в конце очереди\n");
 		return;
 	}
 
-	// Вырезаем узел
 	if (prev == NULL)
 		head = cur->next;
 	else
 		prev->next = cur->next;
 
-	// Добавляем в конец
 	last->next = cur;
 	cur->next = NULL;
 	last = cur;
